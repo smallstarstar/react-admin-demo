@@ -1,7 +1,11 @@
 import React from 'react';
 import './login.less';
 import logo from './images/logo192.png';
-import { Form, Icon, Input, Button } from 'antd';
+import { Form, Icon, Input, Button,message } from 'antd';
+import loginServies from '../../../src/services/loginServices.js';
+import { Redirect } from 'react-router-dom'
+import localStorages from '../../utils/localStorage.js';
+import memoeyInfo from '../../utils/memoeyInfo.js';
 
 const Item = Form.Item;
 
@@ -9,26 +13,43 @@ class Login extends React.Component {
     handleSubmit = e => {
         e.preventDefault();
         // 取出提交数据
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields(async (err, values) => {
             if (!err) {
                 // 成功
                 console.log('Received values of form: ', values);
-            } 
+                const result = await loginServies.userLogin(values.username, values.password);
+                console.log(result)
+                if(result.stateCode === 1){
+                    // 保存用户信息
+                    localStorages.saveUser(result.userEntity);
+                    memoeyInfo.user = result.userEntity;
+                    message.success(result.message);
+                    // 跳转路由
+                    this.props.history.replace('/');
+                } else {
+                    message.error(result.message)
+                }
+            }
         });
         // const form = this.props.form.getFieldsValue();
         // console.log(form)
     }
     validatoPas = (rule, value, callback) => {
         value = value.trim();
-        if(!value) {
+        if (!value) {
             callback('密码不能为空')
-        } else if(!/^[a-zA-Z0-9_]+$/.test(value)) {
+        } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
             callback('密码必须是英文，数字，下划线组成')
         } else {
             callback();
         }
     }
     render() {
+        // 读取localStory中的数据判断数据是否存在------>自动跳转
+        const userInfo = memoeyInfo.user;
+        if(userInfo.id) {
+            return <Redirect to="/"/>
+        }
         // 校验函数对象 ---- 组件是一个函数类型
         const { getFieldDecorator } = this.props.form;
         return (
@@ -61,9 +82,9 @@ class Login extends React.Component {
                             <Form.Item>
                                 {
                                     getFieldDecorator('password', {
-                                        initialValue:'',
+                                        initialValue: '',
                                         rules: [
-                                            { validator : this.validatoPas }
+                                            { validator: this.validatoPas }
                                         ]
                                     })(
                                         <Input
