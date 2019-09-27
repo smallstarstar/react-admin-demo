@@ -1,7 +1,8 @@
 import React from 'react';
 import './index.less';
-import { Button, Card, Table, Modal } from 'antd';
+import { Button, Card, Table, Modal, Pagination } from 'antd';
 import loginServies from '../../services/loginServices';
+import AddUser from './add-user';
 
 export default class Role extends React.Component {
     state = {
@@ -10,6 +11,9 @@ export default class Role extends React.Component {
         visible: false,
         loading: true,
         userInfo: {},
+        currentSize: 4,
+        currentPage: 1,
+        total: 0,
         columns: [
             {
                 title: 'id',
@@ -49,15 +53,25 @@ export default class Role extends React.Component {
     }
     handleDelete = (e) => {
         console.log(e);
-        this.setState({
-            userInfo: e,
-            visible: true
-        })
+        // 显示确认登陆
+        Modal.confirm({
+            title: '确认删除',
+            onOk: () => {
+                // todo
+
+            },
+            onCancel() {
+                console.log('不删除')
+            },
+        });
     }
     // 获取数据
     getInitData = async () => {
-        const data = await loginServies.getUserInfoByPage(1, 7);
-        console.log(data.content);
+        const data = await loginServies.getUserInfoByPage(this.state.currentPage, this.state.currentSize  );
+        console.log(data);
+        this.setState({
+            total: data.totalElements
+        })
         if (data) {
             this.setState({
                 loading: false
@@ -88,23 +102,40 @@ export default class Role extends React.Component {
             visible: false,
         });
     };
-
+    showTotal = (total) => {
+        return '总数' + total
+    }
+    onChange = async(page) => {
+      const data =  await loginServies.getUserInfoByPage(page, this.state.currentSize);
+      data.content.forEach((e, index) => {
+        if (e.userRole === '1') {
+            e.userRole = '管理员';
+        }
+        if (e.userRole === '0') {
+            e.userRole = '普通用户';
+        }
+    })
+      this.setState({
+          dataSource:data.content
+      })
+    }
     render() {
         return (
             <div className="userContainer">
                 <div className="addButton">
-                    <Button type="primary" icon="plus" size={this.state.size} onClick={this.handleOpenDialog}>Primary</Button>
+                    <Button type="primary" icon="plus" size={this.state.size} onClick={this.handleOpenDialog}>添 加</Button>
                 </div>
                 <div className="tableContainer">
                     <Card>
                         <Table bordered dataSource={this.state.dataSource} columns={this.state.columns}
-                            pagination={{
-                                defaultPageSize: 4, showQuickJumper: true
-                            }}
                             rowKey="id"
                             loading={this.state.loading}
+                            pagination={false}
                         />;
                     </Card>
+                    <Pagination className="pagePosition" onChange={this.onChange} showTotal={this.showTotal} pageSize={4}
+                        defaultCurrent={1} total={this.state.total}
+                    />
                 </div>
 
 
@@ -117,12 +148,7 @@ export default class Role extends React.Component {
                     okText="确认"
                     cancelText="取消"
                 >
-                    {this.state.userInfo.id}
-                    {this.state.userInfo.userName}
-                    {this.state.userInfo.userPassword}
-                    {this.state.userInfo.userPhone}
-                    {this.state.userInfo.userEmail}
-                    {this.state.userInfo.userRole}
+                    <AddUser />
                 </Modal>
             </div>
         )

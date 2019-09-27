@@ -18,7 +18,7 @@ class Login extends React.Component {
                 // 成功
                 console.log('Received values of form: ', values);
                 const result = await loginServies.userLogin(values.username, values.password);
-                console.log(result)
+                console.log(result, '-----获取用户信息');
                 if(result.stateCode === 1){
                     // 保存用户信息
                     localStorages.saveUser(result.userEntity);

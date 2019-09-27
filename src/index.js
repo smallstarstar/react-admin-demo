@@ -3,6 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import axios from 'axios';
+/**
+ * 注册相应拦截
+ */
+axios.interceptors.response.use((res)=>{
+    return res.data;
+})
+
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
