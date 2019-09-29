@@ -5,7 +5,7 @@ import { Layout } from 'antd';
 import Router from '../../router/router';
 import HeaderComponent from '../../components/header/index';
 import SideMenu from '../../components/side-meun/index';
-
+import './admin.less';
 
 const { Footer, Sider, Content } = Layout;
 
@@ -24,7 +24,7 @@ export default class Admin extends React.Component {
                 </Sider>
                 <Layout>
                     <HeaderComponent></HeaderComponent>
-                    <Content>
+                    <Content className="containerBody">
                         <Router/>
                     </Content>
                     <Footer>

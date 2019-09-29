@@ -8,8 +8,15 @@ import menulist from '../../config/menu-list';
 import TimeFormat from '../../utils/timeUtils';
 
 class Header extends React.Component {
-    state = {
-        currentTime: TimeFormat.currentTime(),
+    constructor(props) {
+        super(props)
+        this.state = {
+            categoryNameList: [],
+            bookInfoList: [],
+            currentPage: 1,
+            currentSize: 4,
+            currentTime: TimeFormat.currentTime(),
+        }
     }
     // 生命周期
     componentDidMount() {
@@ -18,7 +25,7 @@ class Header extends React.Component {
             this.setState({
                 currentTime: TimeFormat.currentTime(),
             })
-        }, 1000)
+        }, 1000);
     }
     // 销毁组件
     componentWillUnmount() {

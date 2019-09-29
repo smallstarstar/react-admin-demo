@@ -5,7 +5,7 @@ class Product extends React.Component {
     render() {
         return (
           <div>
-              nihao,产品
+              nihao,---------
           </div>
         )
     }
