@@ -9,14 +9,14 @@ import BookDec from '../components/product/bookName/book-dec';
 export default class Router extends React.Component {
     render() {
         return (
-                <Switch>
-                    <Route path="/user" component={Home} />
-                    <Route path="/productOne" component={BookName} />
-                    <Route path="/role" component={Role} />
-                    <Route path="/productTwo" component={Category} />
-                    <Route path="/produceDec/:id" component={BookDec}/>
-                    <Redirect to="/user" />
-                </Switch>
+            <Switch>
+                <Route path="/user" component={Home} />
+                <Route path="/productOne" component={BookName} />
+                <Route path="/role" component={Role} />
+                <Route path="/productTwo" component={Category} />
+                <Route path="/produceDec/:id" component={BookDec} />
+                <Redirect to="/user" />
+            </Switch>
         )
     }
 }

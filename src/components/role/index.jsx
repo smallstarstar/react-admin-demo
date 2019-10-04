@@ -1,6 +1,6 @@
 import React from 'react';
 import './index.less';
-import { Button, Card, Table, Modal, Pagination } from 'antd';
+import { Button, Card, Table, Modal, Pagination, message} from 'antd';
 import loginServies from '../../services/loginServices';
 import AddUser from './add-user';
 
@@ -56,9 +56,14 @@ export default class Role extends React.Component {
         // 显示确认登陆
         Modal.confirm({
             title: '确认删除',
-            onOk: () => {
+            onOk: async () => {
                 // todo
-
+                const result = await loginServies.deleteUserInfoSimple(e.id);
+                if(result) {
+                  message.success('删除用户' + e.userName + '成功');
+                  // 刷新列表
+                   this.getInitData();
+                }
             },
             onCancel() {
                 console.log('不删除')
@@ -67,8 +72,7 @@ export default class Role extends React.Component {
     }
     // 获取数据
     getInitData = async () => {
-        const data = await loginServies.getUserInfoByPage(this.state.currentPage, this.state.currentSize  );
-        console.log(data);
+        const data = await loginServies.getUserInfoByPage(this.state.currentPage, this.state.currentSize);
         this.setState({
             total: data.totalElements
         })
@@ -105,19 +109,19 @@ export default class Role extends React.Component {
     showTotal = (total) => {
         return '总数' + total
     }
-    onChange = async(page) => {
-      const data =  await loginServies.getUserInfoByPage(page, this.state.currentSize);
-      data.content.forEach((e, index) => {
-        if (e.userRole === '1') {
-            e.userRole = '管理员';
-        }
-        if (e.userRole === '0') {
-            e.userRole = '普通用户';
-        }
-    })
-      this.setState({
-          dataSource:data.content
-      })
+    onChange = async (page) => {
+        const data = await loginServies.getUserInfoByPage(page, this.state.currentSize);
+        data.content.forEach((e, index) => {
+            if (e.userRole === '1') {
+                e.userRole = '管理员';
+            }
+            if (e.userRole === '0') {
+                e.userRole = '普通用户';
+            }
+        })
+        this.setState({
+            dataSource: data.content
+        })
     }
     render() {
         return (

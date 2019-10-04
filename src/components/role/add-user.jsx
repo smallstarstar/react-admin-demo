@@ -4,7 +4,7 @@ import { Form, Input } from 'antd';
 
 // form 表单使用高阶组件
 class AddUser extends React.Component {
-    getInpuvalues = (e)=>{
+    getInpuvalues = (e) => {
         console.log(e.target.value);
     }
     render() {
@@ -17,7 +17,7 @@ class AddUser extends React.Component {
                             rules: [{ required: true, message: '不能为空' }],
                             initialValue: '',
                         })(
-                            <Input placeholder="Username" onChange={this.getInpuvalues.bind(this)}/>,
+                            <Input placeholder="Username" onChange={this.getInpuvalues.bind(this)} />,
                         )}
                     </Form.Item>
                 </Form>

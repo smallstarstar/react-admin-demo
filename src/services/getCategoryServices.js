@@ -26,6 +26,12 @@ const categoryServices = {
     async updataCategoryById(id, categoryInfo) {
         const url = commonurl.BaseUrl + categoryUrl.updataCategoryNameById + '?id=' + id;
         return await axios.put(url, categoryInfo);
+    },
+
+    // 分页获取图书的种类信息
+    async getBookKindfnoByPage(page, size) {
+        const url = commonurl.BaseUrl + categoryUrl.getBookKindInfoByPage + '?page=' + page + '&size=' + size;
+        return await axios.get(url);
     }
 }
 

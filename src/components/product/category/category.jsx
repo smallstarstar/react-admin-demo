@@ -1,6 +1,6 @@
 import React from 'react';
 import categoryServices from '../../../services/getCategoryServices';
-import { Button, Card, Table, Modal, message } from 'antd';
+import { Button, Card, Table, Modal, message, Pagination } from 'antd';
 import AddCategory from './add-category';
 import memoeyInfo from '../../../utils/memoeyInfo';
 import './category.less';
@@ -14,7 +14,11 @@ export default class Category extends React.Component {
         size: 'large',
         visible: false,
         visibles: false,
+        currentPage: 1,
+        currentSize: 4,
+        kindDataList: [],
         userInfo: memoeyInfo.user,
+        total: 0,
         columns: [
             {
                 title: '名称',
@@ -29,7 +33,7 @@ export default class Category extends React.Component {
             {
                 title: '编辑',
                 dataIndex: 'operate',
-                width:300,
+                width: 300,
                 render: (item, index) => <span className="deleteButton">
                     <Button type="primary" onClick={this.updata.bind(item, index)}>编辑</Button> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                     <Button type="danger" onClick={this.handleDelete.bind(item, index)}>删除</Button>
@@ -42,7 +46,7 @@ export default class Category extends React.Component {
         this.category = e;
     }
     async  componentDidMount() {
-        await this.initData();
+        await this.initData(this.state.currentPage, this.state.currentSize);
         // 订阅
         Pubsub.subscribe(EventKeys.getCategoryName, (keyName, val) => {
             this.val = val.trim();
@@ -53,10 +57,14 @@ export default class Category extends React.Component {
     }
 
     // 获取初始的数据
-    async initData() {
-        const result = await categoryServices.getCategoryList();
+    async initData(page, size) {
+        // const result = await categoryServices.getCategoryList();
+        // 分因获取种类数据信息
+        const rd = await categoryServices.getBookKindfnoByPage(page, size);
         this.setState({
-            CategoryList: result.reverse()
+            // CategoryList: result.reverse(),
+            kindDataList: rd.content,
+            total: rd.totalElements
         })
     }
     handleOpenDialog = () => {
@@ -71,7 +79,7 @@ export default class Category extends React.Component {
                 const result = await categoryServices.addCategoryName(this.val, this.state.userInfo);
                 if (result) {
                     // 刷新组件
-                    await this.initData();
+                    await this.initData(this.state.currentPage, this.state.currentSize);
                     message.success('添加' + values.categoryName + '成功');
                     this.setState({ visible: false, });
                 } else {
@@ -97,7 +105,7 @@ export default class Category extends React.Component {
                 const result = await categoryServices.updataCategoryById(this.category.id, obj);
                 if (result) {
                     // 刷新组件
-                    await this.initData();
+                    await this.initData(this.state.currentPage, this.state.currentSize);
                     message.success('更新' + values.categoryName + '成功');
                     this.setState({ visibles: false, });
                 } else {
@@ -130,7 +138,7 @@ export default class Category extends React.Component {
                 console.log(result);
                 if (result) {
                     // 刷新列表
-                    await this.initData();
+                    await this.initData(this.state.currentPage, this.state.currentSize);
                     message.success('删除' + e.bookKindName + '成功');
                     this.setState({ visible: false })
                 } else {
@@ -145,7 +153,12 @@ export default class Category extends React.Component {
     }
     // 接收子组件的传递的参数
     getForm = form => this.form = form;
-
+    showTotal = (total) => {
+        return '总数' + total
+    }
+    onChange = async (e) => {
+        await this.initData(e, this.state.currentSize);
+    }
     render() {
         return (
             <div className="userContainer">
@@ -154,10 +167,8 @@ export default class Category extends React.Component {
                 </div>
                 <div className="tableContainer">
                     <Card>
-                        <Table bordered dataSource={this.state.CategoryList} columns={this.state.columns}
-                            pagination={{
-                                defaultPageSize: 6, showQuickJumper: true
-                            }}
+                        <Table bordered dataSource={this.state.kindDataList} columns={this.state.columns}
+                            pagination={false}
                             rowKey="id"
                             loading={this.state.loading}
                         />;
@@ -185,6 +196,8 @@ export default class Category extends React.Component {
                 >
                     <AddCategory setForm={this.getForm} categoryName={this.category || '{}'} />
                 </Modal>
+                <Pagination className="pagePosition" onChange={this.onChange} showTotal={this.showTotal} pageSize={4}
+                    defaultCurrent={1} total={this.state.total} />
             </div>
         )
     }

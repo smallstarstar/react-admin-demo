@@ -19,7 +19,20 @@ const BookInfoServices = {
     async getBookAllInfo(id) {
         const url = CommonUrl.BaseUrl + BookInfoUrl.getBookAllInfoById + '?bookId=' + id;
         return await axios.get(url);
+    },
+
+    // 更新图片信息
+    async saveBookPictureInfo(pictureInfo) {
+        const url = CommonUrl.BaseUrl + BookInfoUrl.savePictureInfo;
+        return await axios.put(url, pictureInfo);
+    },
+
+    // 根据id获取图片信息
+    async getImgInfoById(bookId) {
+        const url = CommonUrl.BaseUrl + BookInfoUrl.getImgInfoById + '?id=' + bookId;
+        return await axios.get(url);
     }
+
 }
 
 

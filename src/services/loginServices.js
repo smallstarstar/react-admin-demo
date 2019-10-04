@@ -15,6 +15,13 @@ const loginServies = {
     async getUserInfoByPage(page, size) {
         const url = commonurl.BaseUrl + LoginUrl.getUserInfoByPage + '?page=' + page + '&size=' + size;
         return await axios.get(url)
+    },
+
+    // 根据用户的id删除用户的个人信息
+    async deleteUserInfoSimple(userId) {
+        const url = commonurl.BaseUrl + LoginUrl.deleteUserInfo + '?id=' + userId;
+        console.log(url)
+        return await axios.delete(url);
     }
 }
 

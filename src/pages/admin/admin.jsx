@@ -13,19 +13,19 @@ const { Footer, Sider, Content } = Layout;
 export default class Admin extends React.Component {
     render() {
         const userInfo = memoeyInfo.user;
-        if (!userInfo) {
+        if (!userInfo.id) {
             // this.props.history.replace --------> 事件回调函数中进行
             return <Redirect to="/login" /> // 自动跳转指定的路由路径
         }
         return (
             <Layout style={{ height: '100%' }}>
                 <Sider>
-                    <SideMenu/>
+                    <SideMenu />
                 </Sider>
                 <Layout>
                     <HeaderComponent></HeaderComponent>
                     <Content className="containerBody">
-                        <Router/>
+                        <Router />
                     </Content>
                     <Footer>
                         你好，世界

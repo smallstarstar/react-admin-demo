@@ -4,8 +4,8 @@ import memorayLocalStoray from '../../utils/memoeyInfo';
 import { Modal } from 'antd';
 import localStorages from '../../utils/localStorage';
 import { withRouter } from 'react-router-dom';
-import menulist from '../../config/menu-list';
 import TimeFormat from '../../utils/timeUtils';
+import { connect } from 'react-redux'
 
 class Header extends React.Component {
     constructor(props) {
@@ -20,7 +20,7 @@ class Header extends React.Component {
     }
     // 生命周期
     componentDidMount() {
-    this.interClear =  setInterval(() => {
+        this.interClear = setInterval(() => {
             // 更新组件的值
             this.setState({
                 currentTime: TimeFormat.currentTime(),
@@ -46,27 +46,9 @@ class Header extends React.Component {
             },
         });
     }
-    getTitle = () => {
-        let title = '';
-        const path = this.props.location.pathname;
-        menulist.forEach((e) => {
-            if (path === e.path) {
-                title = e.title;
-            }
-            if (e.children) {
-                e.children.forEach((el) => {
-                    if (path === el.path) {
-                        title = el.title;
-                    }
-                })
-            }
-        });
-        return title;
-    }
     render() {
         const userInfo = memorayLocalStoray.user;
-        // const title = this.getTitle();
-        
+        const title = this.props.headerTitle;
         return (
             <div className="header_top">
                 <div className="header_top_right">
@@ -76,12 +58,17 @@ class Header extends React.Component {
                 </div>
                 <div className="header_line"></div>
                 <div className="heaser_bottom">
-                    <span>{this.getTitle()}</span>
+                    <span>{title}</span>
                     <span>{this.state.currentTime}</span>
                 </div>
             </div>
         )
     }
 }
-
-export default withRouter(Header);
+// 格式是同统一的
+export default connect(
+    state => ({
+        headerTitle: state.headerTitle
+    }),
+    {}
+)(withRouter(Header));

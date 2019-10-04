@@ -1,7 +1,7 @@
 import React from 'react';
 import './login.less';
 import logo from './images/logo192.png';
-import { Form, Icon, Input, Button,message } from 'antd';
+import { Form, Icon, Input, Button, message } from 'antd';
 import loginServies from '../../../src/services/loginServices.js';
 import { Redirect } from 'react-router-dom'
 import localStorages from '../../utils/localStorage.js';
@@ -19,7 +19,7 @@ class Login extends React.Component {
                 console.log('Received values of form: ', values);
                 const result = await loginServies.userLogin(values.username, values.password);
                 console.log(result, '-----获取用户信息');
-                if(result.stateCode === 1){
+                if (result.stateCode === 1) {
                     // 保存用户信息
                     localStorages.saveUser(result.userEntity);
                     memoeyInfo.user = result.userEntity;
@@ -47,8 +47,8 @@ class Login extends React.Component {
     render() {
         // 读取localStory中的数据判断数据是否存在------>自动跳转
         const userInfo = memoeyInfo.user;
-        if(userInfo.id) {
-            return <Redirect to="/"/>
+        if (userInfo.id) {
+            return <Redirect to="/" />
         }
         // 校验函数对象 ---- 组件是一个函数类型
         const { getFieldDecorator } = this.props.form;
